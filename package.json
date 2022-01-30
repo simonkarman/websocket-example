@@ -38,7 +38,9 @@
     }
   },
   "dependencies": {
+    "@types/ws": "^8.2.2",
     "express": "^4.17.2",
-    "ts-node": "^10.4.0"
+    "ts-node": "^10.4.0",
+    "ws": "^8.4.2"
   }
 }
