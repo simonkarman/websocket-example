@@ -13,8 +13,9 @@ WORKDIR /usr/src/app
 COPY --from=builder /build/package*.json ./
 RUN npm ci --production
 
+COPY certs/ certs/
+
 COPY --from=builder /build/dist ./
 
-ENV PORT=8080
-EXPOSE 8080
+EXPOSE 80 443
 CMD [ "node", "server.js" ]
