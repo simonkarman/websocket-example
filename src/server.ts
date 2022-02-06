@@ -2,6 +2,10 @@ import express from 'express';
 import https from 'https';
 import fs from 'fs';
 import WebSocket from 'ws';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import { healthRouter } from './routers/health-router';
+import { sessionRouter } from './routers/session-router';
 
 // eslint-disable-next-line no-process-env
 const portHTTP = process.env.PORT_HTTP || 80;
@@ -25,11 +29,17 @@ const server = https.createServer({
   key: fs.readFileSync('certs/server.key', 'utf8'),
   cert: fs.readFileSync('certs/server.crt', 'utf8'),
 }, app);
+app.use(cors({
+  credentials: true,
+  origin: ['https://localhost', 'https://ws.karman.dev'],
+  methods: ['OPTIONS', 'GET', 'PUT', 'POST', 'DELETE'],
+}));
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.get('/', (req, res) => {
-  console.info('Responding to \'GET /\'');
-  res.send('Hello, World!');
-});
+app.use('/health', healthRouter);
+app.use('/sessions', sessionRouter);
 
 // WebSocket server
 const wss = new WebSocket.Server({ server });

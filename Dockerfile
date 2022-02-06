@@ -13,6 +13,7 @@ WORKDIR /usr/src/app
 COPY --from=builder /build/package*.json ./
 RUN npm ci --production
 
+# certs should not be part of the docker image, but should be dynamically loaded at some point
 COPY certs/ certs/
 
 COPY --from=builder /build/dist ./
