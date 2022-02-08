@@ -23,7 +23,12 @@ const authorizer: basicAuth.AsyncAuthorizer = async (username, givenPassword, ca
 export default basicAuth({
   unauthorizedResponse: (req: IBasicAuthedRequest): UnauthorizedResponse => ({
     statusCode: 401,
-    body: { code: 'UNAUTHORIZED', message: 'Basic authentication failed.' },
+    body: {
+      code: 'UNAUTHORIZED',
+      message: req.auth?.user === undefined
+        ? 'Basic authentication failed since no auth was provided'
+        : `Basic authentication failed for ${req.auth.user}. Either the user does not exist, or the password is incorrect.`,
+    },
   }),
   authorizeAsync: true,
   authorizer,
